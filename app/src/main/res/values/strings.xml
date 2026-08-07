@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Türkçe Tengwar Klavye</string>
+    <string name="setup_title">Türkçe Tengwar Klavye</string>
+    <string name="setup_step1">1) "Klavyeyi Etkinleştir" düğmesine basıp Diller ve Girdi ayarlarından "Türkçe Tengwar Klavye"yi açın.</string>
+    <string name="setup_step2">2) Herhangi bir uygulamada metin kutusuna dokunun, klavye simgesine basılı tutup "Türkçe Tengwar Klavye"yi seçin.</string>
+    <string name="btn_enable">Klavyeyi Etkinleştir</string>
+    <string name="btn_choose">Klavyeyi Seç</string>
+</resources>

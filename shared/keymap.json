@@ -1,0 +1,881 @@
+{
+  "rows": {
+    "A": [
+      {
+        "standard": {
+          "glyph": "«",
+          "label": "Tırnak"
+        },
+        "shift": {
+          "glyph": "º",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "P",
+          "label": "Çiftleme 1"
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ñ",
+          "label": "1"
+        },
+        "shift": {
+          "glyph": "ñT",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ñ·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ò",
+          "label": "2"
+        },
+        "shift": {
+          "glyph": "ò%",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ò·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ó",
+          "label": "3"
+        },
+        "shift": {
+          "glyph": "ó%",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ó·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ô",
+          "label": "4"
+        },
+        "shift": {
+          "glyph": "ôG",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ô·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "õ",
+          "label": "5"
+        },
+        "shift": {
+          "glyph": "õT",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "õ·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ö",
+          "label": "6"
+        },
+        "shift": {
+          "glyph": "ö%",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ö·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "÷",
+          "label": "7"
+        },
+        "shift": {
+          "glyph": "÷T",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "÷·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ø",
+          "label": "8"
+        },
+        "shift": {
+          "glyph": "øT",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ø·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ù",
+          "label": "9"
+        },
+        "shift": {
+          "glyph": "ù%",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ù·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "ð",
+          "label": "0"
+        },
+        "shift": {
+          "glyph": "ðG",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ð·",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": null,
+          "label": ""
+        },
+        "shift": {
+          "glyph": "À",
+          "label": "Soru İşareti"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "Ì",
+          "label": ""
+        },
+        "shift": {
+          "glyph": "Í",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "Î",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      }
+    ],
+    "B": [
+      {
+        "standard": {
+          "glyph": "`",
+          "label": ""
+        },
+        "shift": {
+          "glyph": "~",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "Ø",
+          "label": "Ě",
+          "desc": true,
+          "labelPos": "bottom"
+        },
+        "shift": {
+          "glyph": "Ù",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "Ú",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "Û",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "$",
+          "label": "E",
+          "desc": true,
+          "labelPos": "bottom"
+        },
+        "shift": {
+          "glyph": "R",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "F",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "V",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "7",
+          "label": "R"
+        },
+        "shift": {
+          "glyph": "u",
+          "label": "R*"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "1",
+          "label": "T"
+        },
+        "shift": {
+          "glyph": "!",
+          "label": "Gen. T"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "l",
+          "label": "Y"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "&",
+          "label": "U"
+        },
+        "shift": {
+          "glyph": "U",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "J",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "M",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "%",
+          "label": "I"
+        },
+        "shift": {
+          "glyph": "T",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "G",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "B",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "^",
+          "label": "O"
+        },
+        "shift": {
+          "glyph": "Y",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "H",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "N",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "q",
+          "label": "P"
+        },
+        "shift": {
+          "glyph": "Q",
+          "label": "Gen. P"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "b",
+          "label": "Ğ"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "Ô",
+          "label": "Ü"
+        },
+        "shift": {
+          "glyph": "Õ",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "Ö",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "×",
+          "label": ""
+        }
+      }
+    ],
+    "C": [
+      {
+        "standard": {
+          "glyph": "#",
+          "label": "A"
+        },
+        "shift": {
+          "glyph": "E",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "D",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "C",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "8",
+          "label": "S"
+        },
+        "shift": {
+          "glyph": "i",
+          "label": "S (Ters)"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "2",
+          "label": "D"
+        },
+        "shift": {
+          "glyph": "@",
+          "label": "Gen. D"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "e",
+          "label": "F"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "x",
+          "label": "G"
+        },
+        "shift": {
+          "glyph": "X",
+          "label": "Gen. G"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "9",
+          "label": "H"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "f",
+          "label": "J"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "z",
+          "label": "K"
+        },
+        "shift": {
+          "glyph": "Z",
+          "label": "Gen. K"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "j",
+          "label": "L"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "d",
+          "label": "Ş"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "È%",
+          "label": "İ"
+        },
+        "shift": {
+          "glyph": "ÉT",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "ÊG",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "BË",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "¹",
+          "label": "Virgül"
+        },
+        "shift": {
+          "glyph": "Ã",
+          "label": "Noktalı Virgül"
+        },
+        "altgr": {
+          "glyph": "ˆ",
+          "label": "Üç Nokta"
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      }
+    ],
+    "D": [
+      {
+        "standard": {
+          "glyph": "ü",
+          "label": "",
+          "desc": true
+        },
+        "shift": {
+          "glyph": "ý",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "þ",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "ÿ",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "k",
+          "label": "Z"
+        },
+        "shift": {
+          "glyph": "<",
+          "label": "Z*"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "K",
+          "label": "Z*"
+        },
+        "shift": {
+          "glyph": ",",
+          "label": "Z* (Ters)"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "s",
+          "label": "C"
+        },
+        "shift": {
+          "glyph": "S",
+          "label": "Gen. C"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "r",
+          "label": "V"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "w",
+          "label": "B"
+        },
+        "shift": {
+          "glyph": "W",
+          "label": "Gen. B"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "5",
+          "label": "N"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "t",
+          "label": "M"
+        },
+        "shift": {
+          "glyph": null,
+          "label": ""
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "^È",
+          "label": "Ö"
+        },
+        "shift": {
+          "glyph": "YÉ",
+          "label": ""
+        },
+        "altgr": {
+          "glyph": "HÊ",
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": "NË",
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "a",
+          "label": "Ç"
+        },
+        "shift": {
+          "glyph": "A",
+          "label": "Gen. Ç"
+        },
+        "altgr": {
+          "glyph": null,
+          "label": ""
+        },
+        "shiftAltgr": {
+          "glyph": null,
+          "label": ""
+        }
+      },
+      {
+        "standard": {
+          "glyph": "·",
+          "label": "Nokta"
+        },
+        "shift": {
+          "glyph": "-",
+          "label": "İki Nokta"
+        },
+        "altgr": {
+          "glyph": "Ë",
+          "label": "Nokta"
+        },
+        "shiftAltgr": {
+          "glyph": "Ê",
+          "label": "Nokta"
+        }
+      }
+    ]
+  }
+}
