@@ -82,6 +82,50 @@ class TengwarIME : InputMethodService() {
             handler.post { currentInputConnection?.deleteSurroundingText(1, 0) }
         }
 
+        /** Tuşa basınca kısa bir titreşim verir. NOT: View.performHapticFeedback ilk denemede
+         *  kullanıldı ama IME pencerelerinde (pencere odağı normal uygulama pencerelerinden
+         *  farklı olduğu için) bazı cihazlarda hiç çalışmadığı görüldü — diğer klavye
+         *  uygulamalarının da bu yüzden doğrudan Vibrator kullandığı anlaşılıyor. */
+        @JavascriptInterface
+        fun vibrate() {
+            handler.post {
+                val vibrator: android.os.Vibrator? =
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                        val vm = getSystemService(VIBRATOR_MANAGER_SERVICE) as? android.os.VibratorManager
+                        vm?.defaultVibrator
+                    } else {
+                        @Suppress("DEPRECATION")
+                        getSystemService(VIBRATOR_SERVICE) as? android.os.Vibrator
+                    }
+                if (vibrator?.hasVibrator() == true) {
+                    // NOT: Hazır efektler (ör. EFFECT_TICK) marka/cihaz donanımına göre
+                    // desteklenmeyebiliyor ve sessizce hiçbir şey yapmayabiliyor — bunun yerine
+                    // her cihazda güvenilir çalışan basit bir titreşim kullanıyoruz.
+                    // Tek uzun titreşim yerine KISA ÇİFT darbe (255 = maksimum yoğunluk, API
+                    // tavanı) veriyoruz — aynı toplam güçte olsa da, açılma/kapanma geçişleri
+                    // olduğu için elde çok daha belirgin hissediliyor.
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        val timings = longArrayOf(15, 10, 15)
+                        val amplitudes = intArrayOf(255, 0, 255)
+                        vibrator.vibrate(android.os.VibrationEffect.createWaveform(timings, amplitudes, -1))
+                    } else {
+                        @Suppress("DEPRECATION")
+                        vibrator.vibrate(longArrayOf(0, 15, 10, 15), -1)
+                    }
+                }
+            }
+        }
+
+        /** Tuşa basınca sistemin standart tuş tıklama sesini çalar. AudioManager,
+         *  kullanıcının sistem ayarlarındaki "Dokunma sesleri" tercihine otomatik uyar. */
+        @JavascriptInterface
+        fun playClick() {
+            handler.post {
+                val am = getSystemService(AUDIO_SERVICE) as? android.media.AudioManager
+                am?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
+            }
+        }
+
         /** Sistemin klavye seçici (input method picker) penceresini açar. */
         @JavascriptInterface
         fun showKeyboardPicker() {

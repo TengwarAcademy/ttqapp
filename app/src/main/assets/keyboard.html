@@ -24,7 +24,11 @@
 }
 
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
-.key, .grid-key, .math-key, .popup, .popup .opt, .mini-glyph, .archive-btn{ touch-action:none; }
+.key, .math-key, .popup, .popup .opt, .mini-glyph, .archive-btn, .grid-key.archive-word-key{ touch-action:none; }
+/* Emoji/noktalama gibi ızgaralardaki tuşlar dikey kaydırmaya izin vermeli — aksi halde
+   kaydırmaya çalışırken parmağın altındaki emoji tıklanıp yazılıyor (kaydırma hiç başlamıyor).
+   .archive-word-key hariç: onun kendi özel sürükle-bırak mantığı var, dokunuşu o yönetiyor. */
+.grid-key{ touch-action:pan-y; }
 html,body{height:100%;}
 body{
   margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
@@ -82,6 +86,9 @@ body{
 .row.control-row{ max-width:354px; margin-left:auto; margin-right:auto; }
 .row:last-child{ margin-bottom:0; }
 .kbd-divider{ height:1px; background:linear-gradient(90deg, transparent, rgba(201,162,75,0.55), transparent); margin:2px 0 7px; }
+/* Emoji sayfalarındaki çizgiler, Harfler/Türkçe sayfalarındaki çizgilerle AYNI hizada
+   dursun diye normal akıştan çıkarılıp mutlak konumlandırılıyor (JS ile top ataması yapılıyor). */
+.emoji-divider{ position:absolute; left:3px; right:3px; margin:0; z-index:1; pointer-events:none; }
 
 .lp-confirm-overlay{
   position:absolute; inset:0; z-index:40; display:none; align-items:center; justify-content:center;
@@ -353,8 +360,11 @@ body.production .kbd-wrap{ width:100%; box-sizing:border-box; }
 
         <!-- EMOJİ / NOKTALAMA SAYFASI -->
         <div class="page" id="pageEmoji">
+          <div class="kbd-divider emoji-divider" id="emojiDivider1"></div>
+          <div class="kbd-divider emoji-divider" id="emojiDivider2"></div>
           <div class="cat-tabs" id="catTabs"></div>
           <div class="grid" id="catGrid"></div>
+          <div id="emojiMiniRow" class="row" style="margin-top:4px;"></div>
           <div class="row control-row" id="emojiControlRow" style="margin-top:6px;">
             <button class="key special" id="backBtn3"><span class="label-txt">ABC</span></button>
             <button class="key special" id="emoji123Btn"><span class="label-txt">123</span></button>
@@ -404,8 +414,11 @@ body.production .kbd-wrap{ width:100%; box-sizing:border-box; }
 
         <!-- TÜRKÇE EMOJİ SAYFASI (Tengwar emoji sayfasıyla aynı içerik, ayrı sayfa) -->
         <div class="page" id="pageTrEmoji">
+          <div class="kbd-divider emoji-divider" id="trEmojiDivider1"></div>
+          <div class="kbd-divider emoji-divider" id="trEmojiDivider2"></div>
           <div class="cat-tabs" id="trCatTabs"></div>
           <div class="grid" id="trCatGrid"></div>
+          <div id="trEmojiMiniRow" class="row" style="margin-top:4px;"></div>
           <div class="row control-row" id="trEmojiControlRow" style="margin-top:6px;">
             <button class="key special" id="trEmojiBackBtn"><span class="label-txt">ABC</span></button>
             <button class="key special" id="trEmoji123Btn"><span class="label-txt">123</span></button>
@@ -461,6 +474,15 @@ let selectedWordId = null;
 const typedEl = document.getElementById('typed');
 const editorEl = document.getElementById('editor');
 const kbdWrap = document.getElementById('kbdWrap');
+
+/* ---------- Tuşa basınca titreşim + tıklama sesi (yalnızca gerçek cihazda) ---------- */
+if(HAS_ANDROID){
+  kbdWrap.addEventListener('pointerdown', (e) => {
+    if(!e.target.closest('.key, .grid-key, .math-key, .popup .opt, .archive-btn')) return;
+    if(typeof AndroidKeyboard.vibrate === 'function') AndroidKeyboard.vibrate();
+    if(typeof AndroidKeyboard.playClick === 'function') AndroidKeyboard.playClick();
+  });
+}
 
 function renderTyped(){
   if(!typedEl) return; // üretim (gerçek klavye) sürümünde sahte editör yok
@@ -1278,6 +1300,100 @@ requestAnimationFrame(() => {
     trMiniRowEl.style.maxWidth = 'none';
   }
   trMiniButtons.forEach(b => { b.style.flex = `1 1 0`; });
+
+  // Emoji sayfalarındaki (Tengwar ve Türkçe) yer tutucu satırlar da aynı
+  // konum/genişliği kullansın — aynı sebepten (sayfa henüz aktif olmayabilir)
+  // extraRow için zaten hesaplanmış değerleri yeniden kullanıyoruz.
+  [emojiMiniRowEl, trEmojiMiniRowEl].forEach(rowEl => {
+    if(symBtnEl && enterBtnForMini){
+      rowEl.style.maxWidth = 'none';
+      rowEl.style.width = extraRow.style.width;
+      rowEl.style.marginLeft = extraRow.style.marginLeft;
+      rowEl.style.marginRight = '0';
+    } else {
+      rowEl.style.maxWidth = 'none';
+    }
+  });
+  emojiMiniButtons.forEach(b => { b.style.flex = `1 1 0`; });
+  trEmojiMiniButtons.forEach(b => { b.style.flex = `1 1 0`; });
+
+  // Emoji sayfalarındaki altın çizgileri, Harfler sayfasındaki iki çizgiyle
+  // (divider ve extraRowDivider) TAM AYNI hizaya getir — sayfa aktif olmasa da
+  // getBoundingClientRect doğru değer döner, sadece görünürlük etkilemez.
+  // kbd-wrap'in 1px üst kenarlığı var; mutlak konumlandırılmış elemanların "top"u
+  // kenarlığın İÇİNDEN (padding kutusundan) ölçülür, bu yüzden kenarlık kalınlığını
+  // düşmemiz gerekiyor — yoksa çizgiler 1px aşağıda görünür.
+  const wrapRectForDividers = kbdWrap.getBoundingClientRect();
+  const wrapBorderTop = parseFloat(getComputedStyle(kbdWrap).borderTopWidth) || 0;
+  const dividerTop1 = divider.getBoundingClientRect().top - wrapRectForDividers.top - wrapBorderTop;
+  const dividerTop2 = extraRowDivider.getBoundingClientRect().top - wrapRectForDividers.top - wrapBorderTop;
+  document.getElementById('emojiDivider1').style.top = dividerTop1 + 'px';
+  document.getElementById('emojiDivider2').style.top = dividerTop2 + 'px';
+  document.getElementById('trEmojiDivider1').style.top = dividerTop1 + 'px';
+  document.getElementById('trEmojiDivider2').style.top = dividerTop2 + 'px';
+
+  // Harfler sayfasındaki mini satırın (Ara Kuyruğu/Yumuşatma/Çiftleme) ikinci
+  // çizgiye göre konumu — Emoji sayfalarındaki mini satırı da AYNI konuma getireceğiz.
+  const extraRowTopRel = extraRow.getBoundingClientRect().top - wrapRectForDividers.top;
+
+  // Emoji ızgarasını iki çizgi arasına yerleştirip kontrol satırını Harfler
+  // sayfasındaki kontrol satırıyla hizalıyoruz. Bu ölçümler hedef sayfa (Emoji/
+  // Türkçe Emoji) o an görünür değilse (display:none) sıfır döner — bu yüzden
+  // ölçüm sırasında ilgili sayfayı geçici olarak aktif yapıyoruz.
+  const lettersControlRow = document.querySelector('#pageLetters .row.control-row');
+  const lettersCtrlButtons = [...lettersControlRow.children];
+  const lettersCtrlRowRect = lettersControlRow.getBoundingClientRect();
+  // NOT: "margin-left" normal akıştaki bir elemanın KENDİ EBEVEYNİNE (.page) göre
+  // hesaplanır, kbdWrap'e göre değil — bu yüzden referans olarak pageLetters'ın
+  // kendi sol kenarını kullanıyoruz (kbdWrap'in padding'i yüzünden ikisi aynı değil).
+  const lettersPageRect = document.getElementById('pageLetters').getBoundingClientRect();
+  const lettersCtrlRowLeft = lettersCtrlRowRect.left - lettersPageRect.left;
+  const lettersCtrlWidths = lettersCtrlButtons.map(b => b.getBoundingClientRect().width);
+
+  function setupEmojiPageLayout(pageId, gridId, catTabsId, miniRowId, controlRowId, buttonIds){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+
+    // Emojileri (ızgarayı) iki altın çizgi arasına yerleştir
+    const grid = document.getElementById(gridId);
+    const catTabs = document.getElementById(catTabsId);
+    const catTabsBottomRel = catTabs.getBoundingClientRect().bottom - wrapRectForDividers.top;
+    const desiredGridTop = dividerTop1 + wrapBorderTop + 1 + 7; // çizginin kalınlığı + standart 7px boşluk
+    grid.style.marginTop = (desiredGridTop - catTabsBottomRel) + 'px';
+    const gridTopRel = grid.getBoundingClientRect().top - wrapRectForDividers.top;
+    const desiredGridBottom = dividerTop2 + wrapBorderTop - 2; // ikinci çizginin standart 2px üst boşluğu
+    grid.style.height = (desiredGridBottom - gridTopRel) + 'px';
+
+    // Mini satırı (yer tutucu 3 düğme), Harfler sayfasındaki mini satırla (ikinci
+    // çizgiye göre) AYNI konuma getir — böylece dört sekmede de aynı hizada dururlar.
+    const miniRow = document.getElementById(miniRowId);
+    const gridBottomRel = grid.getBoundingClientRect().bottom - wrapRectForDividers.top;
+    miniRow.style.marginTop = (extraRowTopRel - gridBottomRel) + 'px';
+
+    // Kontrol satırındaki düğmeleri (ABC...Enter) Harfler sayfasıyla aynı genişlik/
+    // konuma getir. "Silme" (backspace) Harfler'de bu satırda olmadığı için ekstra
+    // bir düğme olarak sona ekleniyor, önceki 6 düğmenin konumunu etkilemiyor.
+    const row = document.getElementById(controlRowId);
+    const backspaceBtn = row.lastElementChild;
+    buttonIds.forEach((id, i) => {
+      const btn = document.getElementById(id);
+      if(btn) btn.style.flex = `0 0 ${lettersCtrlWidths[i]}px`;
+    });
+    const backspaceWidth = backspaceBtn.getBoundingClientRect().width || 29;
+    const gap = 3;
+    const totalWidth = lettersCtrlWidths.reduce((a, b) => a + b, 0) + gap * lettersCtrlWidths.length + backspaceWidth;
+    row.style.maxWidth = 'none';
+    row.style.width = totalWidth + 'px';
+    row.style.marginLeft = lettersCtrlRowLeft + 'px';
+    row.style.marginRight = '0';
+    row.style.justifyContent = 'flex-start';
+  }
+  setupEmojiPageLayout('pageEmoji', 'catGrid', 'catTabs', 'emojiMiniRow', 'emojiControlRow', ['backBtn3', 'emoji123Btn', 'emojiCommaBtn', 'spaceBtn3', 'emojiPeriodBtn', 'enterBtn3']);
+  setupEmojiPageLayout('pageTrEmoji', 'trCatGrid', 'trCatTabs', 'trEmojiMiniRow', 'trEmojiControlRow', ['trEmojiBackBtn', 'trEmoji123Btn', 'trEmojiCommaBtn', 'trEmojiSpaceBtn', 'trEmojiPeriodBtn', 'trEmojiEnterBtn']);
+
+  // Başlangıç sayfasını (Harfler) tekrar aktif yap
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pageLetters').classList.add('active');
 });
 
 /* ---------- Sayılar/semboller sayfası: Satır A (ilk tuş -Tırnak- kaldırıldı, aşağıdaki ızgarada zaten var) ---------- */
@@ -1598,7 +1714,14 @@ const TR_ROW2 = ['A','S','D','F','G','H','J','K','L','Ş','İ'];
 const TR_ROW3 = ['Z','X','C','V','B','N','M','Ö','Ç'];
 
 const trNumberRowEl = document.getElementById('trNumberRow');
-trNumberRowEl.appendChild(buildPlainRow(TR_DIGITS, null, true, false));
+const trNumberRowInner = buildPlainRow(TR_DIGITS, null, true, false);
+// Bu satır kendi kabının (#trNumberRow) tek çocuğu olduğu için CSS'teki
+// ".row:last-child{ margin-bottom:0; }" kuralı yanlışlıkla devreye giriyor —
+// Tengwar tarafındaki karşılığı (sayı satırı, kendi kabında son eleman DEĞİL)
+// bu kuraldan etkilenmiyor. Altın çizginin konumu iki tarafta eşit olsun diye
+// burada aynı 3px alt boşluğu elle veriyoruz.
+trNumberRowInner.style.marginBottom = '3px';
+trNumberRowEl.appendChild(trNumberRowInner);
 
 const engRowsContainer = document.getElementById('engRowsContainer');
 engRowsContainer.appendChild(buildPlainRow(TR_ROW1, null, false, true));
@@ -1619,6 +1742,10 @@ trRowD.className = 'row';
 trRowD.appendChild(trCapsBtn);
 TR_ROW3.forEach(ch => trRowD.appendChild(makePlainCharKey(ch, false, true)));
 trRowD.appendChild(makeBackspace());
+// Aynı sebepten (bu satır #engRowsContainer'ın son çocuğu): Tengwar tarafındaki
+// karşılığı (Satır D) kendi kabında son eleman olmadığı için 3px alt boşluğunu
+// koruyor — burada da altın çizginin konumu eşit olsun diye elle veriyoruz.
+trRowD.style.marginBottom = '3px';
 engRowsContainer.appendChild(trRowD);
 
 // Tengwar sayfasındaki mini satırla (Ara Kuyruğu/Yumuşatma/Çiftleme) AYNI konum ve boyutta
@@ -1636,6 +1763,25 @@ const trMiniButtons = [
   makeTrPlaceholderMiniButton('ÇİFTLEME')
 ];
 trMiniButtons.forEach(b => trMiniRowEl.appendChild(b));
+
+// Emoji sayfalarında (Tengwar ve Türkçe) da AYNI konum/boyutta üç yer tutucu
+// düğme — boşluk tuşunun hemen üstündeki boşluğu doldurmak için eklendi,
+// içerikleri daha sonra belirlenecek.
+const emojiMiniRowEl = document.getElementById('emojiMiniRow');
+const emojiMiniButtons = [
+  makeTrPlaceholderMiniButton('ARA KUYRUĞU'),
+  makeTrPlaceholderMiniButton('YUMUŞATMA'),
+  makeTrPlaceholderMiniButton('ÇİFTLEME')
+];
+emojiMiniButtons.forEach(b => emojiMiniRowEl.appendChild(b));
+
+const trEmojiMiniRowEl = document.getElementById('trEmojiMiniRow');
+const trEmojiMiniButtons = [
+  makeTrPlaceholderMiniButton('ARA KUYRUĞU'),
+  makeTrPlaceholderMiniButton('YUMUŞATMA'),
+  makeTrPlaceholderMiniButton('ÇİFTLEME')
+];
+trEmojiMiniButtons.forEach(b => trEmojiMiniRowEl.appendChild(b));
 
 /* ---------- Türkçe "123" sayfası: Tengwar 123'üyle aynı dizilim, standart noktalama ---------- */
 const trSymRowContainer = document.getElementById('trSymRowContainer');

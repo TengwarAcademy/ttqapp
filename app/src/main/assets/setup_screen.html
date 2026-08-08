@@ -81,6 +81,8 @@ body{
   touch-action:none;
 }
 .lp-lightbox.open img{ transform:scale(1); }
+/* Ana Sayfa logosu büyütüldüğünde çerçeve/gölge olmadan, sadece kendisi büyüsün */
+.lp-lightbox img.logo-preview{ border:none; box-shadow:none; border-radius:0; background:none; }
 .page{ display:none; opacity:0; transition:opacity .22s ease; }
 .page.active{ display:block; }
 .page.page-visible{ opacity:1; }
@@ -130,6 +132,8 @@ body{
 }
 .guide-text h4{ margin:0 0 4px; font-size:13px; color:var(--parchment); }
 .guide-text p{ margin:0; font-size:11.5px; color:rgba(228,236,217,0.6); line-height:1.55; }
+.guide-subhead{ margin:10px 0 4px; font-size:12px; font-weight:700; color:var(--gold-soft); }
+.guide-subhead:first-of-type{ margin-top:6px; }
 
 /* ---- Hakkında sayfası ---- */
 .about-logo{ text-align:center; margin:10px 0 18px; }
@@ -270,7 +274,7 @@ body{
 .analiz-word{ color:var(--gold-soft); text-align:right; display:flex; flex-direction:column; align-items:flex-end; }
 .analiz-word-tengwar{ font-family:'TengwarAnnatar', serif; font-size:19px; }
 .analiz-word-turkish{ font-size:12px; margin-top:2px; }
-.analiz-header-divider{ height:1px; margin:12px 0 16px; background:linear-gradient(90deg, transparent, var(--gold), transparent); }
+.analiz-header-divider{ width:160px; height:2px; margin:12px auto 16px; background:linear-gradient(90deg, transparent, var(--gold), transparent); }
 .analiz-cols-wrap{
   display:flex; flex-wrap:nowrap; gap:20px; justify-content:flex-start;
   overflow-x:auto; padding-bottom:10px;
@@ -288,16 +292,21 @@ body{
 .history-item-icon.wrong{ color:#d98c7a; }
 .history-empty{ text-align:center; color:rgba(228,236,217,0.4); font-size:12.5px; margin-top:30px; }
 
-.journal-item{
-  background:var(--slate-dark); border-radius:10px; padding:10px 14px; margin-bottom:8px;
-  border:1px solid rgba(201,162,75,0.15);
+.journal-item{ position:relative; overflow:hidden; border-radius:10px; margin-bottom:8px; }
+.journal-item-delete-bg{
+  position:absolute; inset:0; background:#c0574a; border-radius:10px;
+  display:flex; align-items:center; padding-left:16px;
+}
+.journal-item-content{
+  background:var(--slate-dark); border-radius:10px; padding:10px 14px;
+  border:1px solid rgba(201,162,75,0.15); position:relative; z-index:1;
 }
 .journal-item-top{ display:flex; align-items:center; gap:10px; }
 .journal-star{ flex-shrink:0; cursor:pointer; width:20px; height:20px; color:rgba(228,236,217,0.3); }
 .journal-star.fav{ color:var(--gold); }
 .journal-word{ flex:1; cursor:pointer; color:var(--parchment); font-size:15px; word-break:break-word; }
 .journal-word.tengwar{ font-family:'TengwarAnnatar', serif; font-size:19px; }
-.journal-actions{ display:flex; gap:8px; margin-top:10px; padding-top:8px; border-top:1px solid rgba(201,162,75,0.1); }
+.journal-actions{ display:flex; gap:8px; }
 .journal-action-btn{
   display:flex; align-items:center; justify-content:center; width:26px; height:26px;
   background:transparent; border:none; color:rgba(228,236,217,0.5); cursor:pointer; padding:0;
@@ -323,13 +332,11 @@ body{
 .lp-confirm-no{ background:transparent; color:var(--gold-soft); border:1.5px solid rgba(201,162,75,0.5); }
 
 .journal-item-top{ position:relative; padding-right:8px; }
-.journal-word-tr{
-  position:absolute; top:0; right:0; max-width:45%; font-size:10.5px; color:rgba(228,236,217,0.5);
-  text-align:right; cursor:pointer;
+.journal-bottom-row{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; position:relative; }
+.journal-bottom-row::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(201,162,75,0.55), transparent);
 }
-.journal-word-tr.expanded{ max-width:none; white-space:nowrap; overflow-x:auto; }
-.journal-word-main{ padding-right:80px; }
-.journal-bottom-row{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:8px; border-top:1px solid rgba(201,162,75,0.1); position:relative; }
 .journal-star{ order:2; }
 
 .journal-warning-box{
@@ -409,9 +416,33 @@ body{
 .kb-try-area::placeholder{ font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; font-size:14px; color:rgba(44,42,36,0.4); }
 
 
+/* ---- Açılış (splash) ekranı: sadece logo + Tengwar cümlesi, her açılışta bir kez ---- */
+.splash-overlay{
+  position:absolute; inset:0; z-index:4;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  background:var(--slate);
+  opacity:1; transition:opacity .6s ease;
+}
+.splash-overlay.hide{ opacity:0; pointer-events:none; }
+.splash-badge{ width:150px; height:150px; opacity:0; transform:scale(0.86); animation:splashIn .8s cubic-bezier(.22,.8,.28,1) forwards; }
+.splash-badge svg{ width:100%; height:100%; }
+.splash-motto{ font-size:19px; opacity:0; transform:translateY(6px); animation:splashIn .8s cubic-bezier(.22,.8,.28,1) .22s forwards; margin:0; }
+@keyframes splashIn{ to{ opacity:1; transform:none; } }
+
+/* Ana Sayfa'daki kurulum düğmeleri splash kapanana kadar gizli, sonra yavaşça belirir */
+#btnEnable, #btnSelect{ opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease; }
+#btnEnable.reveal{ opacity:1; transform:none; }
+#btnSelect.reveal{ opacity:1; transform:none; transition-delay:.12s; }
+
+@media (prefers-reduced-motion: reduce){
+  .splash-badge, .splash-motto{ animation:none; opacity:1; transform:none; }
+  .splash-overlay{ transition:none; }
+  #btnEnable, #btnSelect{ transition:none; }
+}
+
 body.production{
   margin:0; padding:0; min-height:0; height:100vh; display:flex; flex-direction:column;
-  align-items:stretch; justify-content:flex-start; background:var(--slate);
+  align-items:stretch; justify-content:flex-start; background:var(--slate); position:relative;
 }
 body.production .app-header{ flex-shrink:0; }
 body.production .content{ flex:1; min-height:0; }
@@ -420,6 +451,10 @@ body.production .tabbar{ flex-shrink:0; }
 </style>
 </head>
 <body class="production">
+<div class="splash-overlay" id="splashOverlay">
+  <div class="splash-badge" id="splashBadge"></div>
+  <div class="tengwar-motto splash-motto">hU7iD wj#5P#7Y5$ Â 8lEjiD r$j°$5$Á</div>
+</div>
 <div class="app-header">
         <svg viewBox="0 0 64 34" fill="none"><path d="M2 30 C 10 6, 22 6, 32 20 C 42 6, 54 6, 62 30" stroke="#c9a24b" stroke-width="1.6"></path><circle cx="32" cy="6" r="2.6" fill="#c9a24b"></circle></svg>
         <div class="title">Tengwar Academy</div>
@@ -525,15 +560,6 @@ body.production .tabbar{ flex-shrink:0; }
             2. Klavyeyi Seç
           </button>
 
-          <div class="contact-icons">
-            <a href="https://www.instagram.com/tengwar_academy?igsh=MXAxNmQ2cXhsZWR1NQ==" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"></circle></svg>
-            </a>
-            <a href="https://www.tengwaracademy.com/ana-sayfa?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAb21jcATbFMNleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaf88N2iWqG8UEv6tcXfhFSQ6I22WpZTWUTxsLK27OCmfD2WbzG3qqAthvNJ_A_aem_cDfVUTTFx4tpc_QKqG7m7A" target="_blank" rel="noopener" aria-label="Web Sitesi">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.5"></circle><path d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"></path></svg>
-            </a>
-          </div>
-          <p class="contact-email">tengwaracademy@gmail.com</p>
         </div>
 
         <!-- REHBER SAYFASI -->
@@ -596,6 +622,55 @@ body.production .tabbar{ flex-shrink:0; }
           <div style="display:flex; align-items:center; gap:10px; margin:-8px -20px 18px; padding:16px 20px; border-bottom:1px solid rgba(201,162,75,0.2);">
             <button id="appInfoBackBtn" style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; background:var(--slate-dark); border:1px solid rgba(201,162,75,0.3); border-radius:8px; color:var(--gold-soft); cursor:pointer; padding:0; flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 18l-6-6 6-6"></path></svg></button>
             <h3 style="margin:0; color:var(--parchment); font-size:16px;">Uygulamaya Dair</h3>
+          </div>
+          <div style="padding:0 20px 20px;">
+          <div class="guide-item" id="guideDefterItem" style="cursor:pointer;">
+            <div class="guide-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e2c785" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="19" height="19"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h8"></path></svg></div>
+            <div class="guide-text">
+              <h4>Defter</h4>
+              <p>• Bu sekmede Tengwar ile yazım deneyimi kazanabileceğiz not defteri ve destekçi farklı uygulamalar bulunmaktadır.</p>
+            </div>
+          </div>
+          <div class="guide-item" id="guidePratikItem" style="cursor:pointer;">
+            <div class="guide-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e2c785" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="19" height="19"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 7h7M9 11h5"></path></svg></div>
+            <div class="guide-text">
+              <h4>Pratik</h4>
+              <p>• Bu sekmede Türkçe Tengwar bilginizi test etmek ve pekiştirmek amacıyla geliştirilmiş çeşitli interaktif içerikler bulunmaktadır.</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <div class="guide-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#e2c785" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="19" height="19"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 8v5"></path><path d="M12 16.2h.01"></path></svg></div>
+            <div class="guide-text">
+              <h4>Hakkında</h4>
+              <p>• Bu sekmede uygulama ile ilgili çeşitli teknik bilgiler, hata bildirimi düğmesi ve bazı iletişim verileri bulunmaktadır.</p>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- UYGULAMAYA DAİR > DEFTER DETAY SAYFASI -->
+        <div class="page" id="pageDefterInfo" style="padding:0;">
+          <div style="display:flex; align-items:center; gap:10px; margin:-8px -20px 18px; padding:16px 20px; border-bottom:1px solid rgba(201,162,75,0.2);">
+            <button id="defterInfoBackBtn" style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; background:var(--slate-dark); border:1px solid rgba(201,162,75,0.3); border-radius:8px; color:var(--gold-soft); cursor:pointer; padding:0; flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 18l-6-6 6-6"></path></svg></button>
+            <h3 style="margin:0; color:var(--parchment); font-size:16px;">Defter</h3>
+          </div>
+          <div style="padding:0 20px 20px;">
+            <div class="guide-subhead" style="margin-top:0;">Yazı Alanı</div>
+            <p id="defterYaziAlaniDesc" style="margin:0 0 18px; font-size:12.5px; color:rgba(228,236,217,0.6); line-height:1.6;">• Bu sekme, uygulamanın başat projesi olan Türkçe Tengwar Klavye'nin birincil kullanım alanıdır. Burada klavye fonksiyonlarının tümünü kullanabilir ve kişisel notlarınızı oluşturabilirsiniz (bkz. Klavyeye Dair).</p>
+            <div class="guide-subhead">Günlük</div>
+            <p id="defterGunlukDesc" style="margin:0; font-size:12.5px; color:rgba(228,236,217,0.6); line-height:1.6;">• Klavyedeki Arşiv düğmesinden bağımsız Günlük sekmesi, sözcükleri daha kalıcı biçimde saklayabileceğiniz bir özel alandır.</p>
+          </div>
+        </div>
+
+        <!-- UYGULAMAYA DAİR > PRATİK DETAY SAYFASI -->
+        <div class="page" id="pagePratikInfo" style="padding:0;">
+          <div style="display:flex; align-items:center; gap:10px; margin:-8px -20px 18px; padding:16px 20px; border-bottom:1px solid rgba(201,162,75,0.2);">
+            <button id="pratikInfoBackBtn" style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; background:var(--slate-dark); border:1px solid rgba(201,162,75,0.3); border-radius:8px; color:var(--gold-soft); cursor:pointer; padding:0; flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 18l-6-6 6-6"></path></svg></button>
+            <h3 style="margin:0; color:var(--parchment); font-size:16px;">Pratik</h3>
+          </div>
+          <div style="padding:0 20px 20px;">
+            <div class="guide-subhead" style="margin-top:0;">Sözcük Yazımı</div>
+            <p id="pratikSozcukYazimiDesc" style="margin:0; font-size:12.5px; color:rgba(228,236,217,0.6); line-height:1.6;">• Tengwar ile verilmiş sözcüklerin Türkçe (Latin) karşılıklarını, aynı zamanda tersine Türkçe verilmiş sözcüklerin Tengwar karşılıklarını yazarak deneyim kazanmanızı sağlayan bir uygulama.</p>
           </div>
         </div>
 
@@ -957,6 +1032,16 @@ body.production .tabbar{ flex-shrink:0; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"></path><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
             <span>Hata Bildir</span>
           </a>
+
+          <div class="contact-icons">
+            <a href="https://www.instagram.com/tengwar_academy?igsh=MXAxNmQ2cXhsZWR1NQ==" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"></circle></svg>
+            </a>
+            <a href="https://www.tengwaracademy.com/ana-sayfa?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAb21jcATbFMNleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaf88N2iWqG8UEv6tcXfhFSQ6I22WpZTWUTxsLK27OCmfD2WbzG3qqAthvNJ_A_aem_cDfVUTTFx4tpc_QKqG7m7A" target="_blank" rel="noopener" aria-label="Web Sitesi">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.5"></circle><path d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"></path></svg>
+            </a>
+          </div>
+          <p class="contact-email">tengwaracademy@gmail.com</p>
         </div>
 
       </div>
@@ -992,7 +1077,7 @@ body.production .tabbar{ flex-shrink:0; }
       
 <script>
 
-const pages = { pageHome: document.getElementById('pageHome'), pageGuide: document.getElementById('pageGuide'), pageKeyboard: document.getElementById('pageKeyboard'), pageAbout: document.getElementById('pageAbout'), pageLongPress: document.getElementById('pageLongPress'), pageSpace: document.getElementById('pageSpace'), pageArchiveGuide: document.getElementById('pageArchiveGuide'), pagePractice: document.getElementById('pagePractice'), pageWordGame: document.getElementById('pageWordGame'), pageHistory: document.getElementById('pageHistory'), pageWritingArea: document.getElementById('pageWritingArea'), pageJournal: document.getElementById('pageJournal'), pageJournalFavorites: document.getElementById('pageJournalFavorites'), pageKeyboardInfo: document.getElementById('pageKeyboardInfo'), pageAppInfo: document.getElementById('pageAppInfo') };
+const pages = { pageHome: document.getElementById('pageHome'), pageGuide: document.getElementById('pageGuide'), pageKeyboard: document.getElementById('pageKeyboard'), pageAbout: document.getElementById('pageAbout'), pageLongPress: document.getElementById('pageLongPress'), pageSpace: document.getElementById('pageSpace'), pageArchiveGuide: document.getElementById('pageArchiveGuide'), pagePractice: document.getElementById('pagePractice'), pageWordGame: document.getElementById('pageWordGame'), pageHistory: document.getElementById('pageHistory'), pageWritingArea: document.getElementById('pageWritingArea'), pageJournal: document.getElementById('pageJournal'), pageJournalFavorites: document.getElementById('pageJournalFavorites'), pageKeyboardInfo: document.getElementById('pageKeyboardInfo'), pageAppInfo: document.getElementById('pageAppInfo'), pageDefterInfo: document.getElementById('pageDefterInfo'), pagePratikInfo: document.getElementById('pagePratikInfo') };
 
 document.getElementById('menuWritingAreaBtn').addEventListener('click', () => {
   showPage(pages.pageWritingArea);
@@ -1046,6 +1131,18 @@ document.getElementById('menuAppInfoBtn').addEventListener('click', () => {
 document.getElementById('appInfoBackBtn').addEventListener('click', () => {
   showPage(pages.pageGuide);
 });
+document.getElementById('guideDefterItem').addEventListener('click', () => {
+  showPage(pages.pageDefterInfo);
+});
+document.getElementById('defterInfoBackBtn').addEventListener('click', () => {
+  showPage(pages.pageAppInfo);
+});
+document.getElementById('guidePratikItem').addEventListener('click', () => {
+  showPage(pages.pagePratikInfo);
+});
+document.getElementById('pratikInfoBackBtn').addEventListener('click', () => {
+  showPage(pages.pageAppInfo);
+});
 
 /* ---------- Görsellere tıklayınca büyütme (lightbox) + iki parmakla yakınlaştırma + kaydırma (pan) ---------- */
 (function(){
@@ -1074,6 +1171,7 @@ document.getElementById('appInfoBackBtn').addEventListener('click', () => {
 
   document.querySelectorAll('.lp-content img').forEach(img => {
     img.addEventListener('click', () => {
+      lightboxImg.classList.remove('logo-preview');
       lightboxImg.src = img.src;
       resetZoom();
       lightbox.classList.add('open');
@@ -1089,6 +1187,7 @@ document.getElementById('appInfoBackBtn').addEventListener('click', () => {
       // aktarılan SVG içinde çözülemiyor — gerçek renk koduyla değiştiriyoruz.
       svgMarkup = svgMarkup.replace(/var\(--gold-soft\)/g, '#e2c785');
       lightboxImg.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgMarkup)));
+      lightboxImg.classList.add('logo-preview');
       resetZoom();
       lightbox.classList.add('open');
     });
@@ -1158,6 +1257,26 @@ document.getElementById('btnEnable').addEventListener('click', () => {
 document.getElementById('btnSelect').addEventListener('click', () => {
   if(HAS_ANDROID) AndroidSetup.showKeyboardPicker();
 });
+
+/* ---- Açılış (splash) ekranı: logo + Tengwar cümlesi, her açılışta gösterilir ---- */
+(function(){
+  const splash = document.getElementById('splashOverlay');
+  const badge = document.getElementById('splashBadge');
+  const heroBadge = document.getElementById('heroLogoBadge');
+  if(badge && heroBadge) badge.innerHTML = heroBadge.innerHTML;
+  const btnEnableEl = document.getElementById('btnEnable');
+  const btnSelectEl = document.getElementById('btnSelect');
+  let dismissed = false;
+  function dismissSplash(){
+    if(dismissed) return;
+    dismissed = true;
+    splash.classList.add('hide');
+    btnEnableEl.classList.add('reveal');
+    btnSelectEl.classList.add('reveal');
+  }
+  splash.addEventListener('click', dismissSplash);
+  setTimeout(dismissSplash, 2000);
+})();
 
 /* ---------- Görsel indir (JPEG/PNG) — örnek projeden alınan yüksek kalite render mantığı ---------- */
 (function(){
@@ -1721,7 +1840,7 @@ document.getElementById('btnSelect').addEventListener('click', () => {
           <div class="analiz-title">Analiz:</div>
           <div class="analiz-word">
             <div class="analiz-word-tengwar">${escapeHtml(tengwarText)}</div>
-            <div class="analiz-word-turkish">(${escapeHtml(turkishText)})</div>
+            <div class="analiz-word-turkish">${escapeHtml(turkishText)}</div>
           </div>
         </div>
         <div class="analiz-header-divider"></div>
@@ -1868,12 +1987,6 @@ document.getElementById('btnSelect').addEventListener('click', () => {
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 7.1-1.01L12 2z"></path></svg>';
   }
 
-  function lookupTurkish(tengwarWord){
-    const pairs = window.TR_TO_TENGWAR_PAIRS_GLOBAL || [];
-    const match = pairs.find(p => p.tengwar === tengwarWord);
-    return match ? match.turkish : '';
-  }
-
   function renderJournalList(container, entries){
     if(entries.length === 0){
       container.innerHTML = '<p class="history-empty">Henüz kayıt yok.</p>';
@@ -1882,25 +1995,27 @@ document.getElementById('btnSelect').addEventListener('click', () => {
     container.innerHTML = entries.map((entry, i) => {
       const tengwar = isTengwarText(entry.word);
       const wordSafe = escapeHtmlJ(entry.word);
-      const tr = tengwar ? lookupTurkish(entry.word) : '';
-      const trSafe = escapeHtmlJ(tr);
       return `<div class="journal-item" data-word="${wordSafe}" data-idx="${i}">
-        <div class="journal-item-top">
-          ${tr ? `<span class="journal-word-tr" data-action="tr-toggle">(${trSafe})</span>` : ''}
-          <span class="journal-word journal-word-main ${tengwar ? 'tengwar' : ''}" data-action="word">${wordSafe}</span>
+        <div class="journal-item-delete-bg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>
         </div>
-        <div class="journal-bottom-row">
-          <div class="journal-actions">
-            <button class="journal-action-btn" data-action="copy" aria-label="Kopyala"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-            <button class="journal-action-btn" data-action="download" aria-label="İndir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg></button>
-            <button class="journal-action-btn" data-action="move" aria-label="Yazı alanına taşı"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4l4 4-4 4"></path><path d="M21 8H9"></path><path d="M7 20l-4-4 4-4"></path><path d="M3 16h12"></path></svg></button>
-            <button class="journal-action-btn" data-action="delete" aria-label="Sil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"></path><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"></path></svg></button>
+        <div class="journal-item-content">
+          <div class="journal-item-top">
+            <span class="journal-word journal-word-main ${tengwar ? 'tengwar' : ''}" data-action="word">${wordSafe}</span>
           </div>
-          <div class="journal-download-popup" data-idx="${i}" style="display:none; position:absolute; background:var(--slate-dark); border:1px solid rgba(201,162,75,0.4); border-radius:8px; padding:4px; gap:4px; z-index:5; box-shadow:0 6px 16px rgba(0,0,0,0.4);">
-            <button class="journal-dl-opt" data-format="jpeg" style="display:block; width:100%; border:none; background:transparent; color:var(--gold-soft); padding:6px 14px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit;">JPEG</button>
-            <button class="journal-dl-opt" data-format="png" style="display:block; width:100%; border:none; background:transparent; color:var(--gold-soft); padding:6px 14px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit;">PNG</button>
+          <div class="journal-bottom-row">
+            <div class="journal-actions">
+              <button class="journal-action-btn" data-action="copy" aria-label="Kopyala"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+              <button class="journal-action-btn" data-action="download" aria-label="İndir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg></button>
+              <button class="journal-action-btn" data-action="move" aria-label="Yazı alanına taşı"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4l4 4-4 4"></path><path d="M21 8H9"></path><path d="M7 20l-4-4 4-4"></path><path d="M3 16h12"></path></svg></button>
+              <button class="journal-action-btn" data-action="delete" aria-label="Sil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"></path><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path><path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"></path></svg></button>
+            </div>
+            <div class="journal-download-popup" data-idx="${i}" style="display:none; position:absolute; background:var(--slate-dark); border:1px solid rgba(201,162,75,0.4); border-radius:8px; padding:4px; gap:4px; z-index:5; box-shadow:0 6px 16px rgba(0,0,0,0.4);">
+              <button class="journal-dl-opt" data-format="jpeg" style="display:block; width:100%; border:none; background:transparent; color:var(--gold-soft); padding:6px 14px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit;">JPEG</button>
+              <button class="journal-dl-opt" data-format="png" style="display:block; width:100%; border:none; background:transparent; color:var(--gold-soft); padding:6px 14px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit;">PNG</button>
+            </div>
+            <span class="journal-star ${entry.favorite ? 'fav' : ''}" data-action="star">${renderStarSvg(entry.favorite)}</span>
           </div>
-          <span class="journal-star ${entry.favorite ? 'fav' : ''}" data-action="star">${renderStarSvg(entry.favorite)}</span>
         </div>
       </div>`;
     }).join('');
@@ -1917,10 +2032,6 @@ document.getElementById('btnSelect').addEventListener('click', () => {
           showTengwarAnalysisFromJournal(word);
         }
       });
-      const trEl = itemEl.querySelector('[data-action="tr-toggle"]');
-      if(trEl){
-        trEl.addEventListener('click', () => trEl.classList.toggle('expanded'));
-      }
       itemEl.querySelector('[data-action="copy"]').addEventListener('click', () => copyJournalWord(word));
       const dlBtn = itemEl.querySelector('[data-action="download"]');
       const dlPopup = itemEl.querySelector('.journal-download-popup');
@@ -1938,8 +2049,44 @@ document.getElementById('btnSelect').addEventListener('click', () => {
       });
       itemEl.querySelector('[data-action="move"]').addEventListener('click', () => moveJournalWordToWritingArea(word));
       itemEl.querySelector('[data-action="delete"]').addEventListener('click', () => deleteJournalWord(word));
+
+      /* Sağa kaydırınca sil — "Geçmiş" sekmesindeki mekanizmanın aynısı */
+      const jContent = itemEl.querySelector('.journal-item-content');
+      let jStartX = 0, jCurrentX = 0, jDragging = false;
+      jContent.addEventListener('touchstart', (e) => {
+        jStartX = e.touches[0].clientX;
+        jCurrentX = 0;
+        jDragging = true;
+        jContent.style.transition = 'none';
+      }, { passive:true });
+      jContent.addEventListener('touchmove', (e) => {
+        if(!jDragging) return;
+        const dx = e.touches[0].clientX - jStartX;
+        if(dx > 0){
+          jCurrentX = dx;
+          jContent.style.transform = `translateX(${jCurrentX}px)`;
+        }
+      }, { passive:true });
+      jContent.addEventListener('touchend', () => {
+        if(!jDragging) return;
+        jDragging = false;
+        jContent.style.transition = 'transform .2s ease';
+        const threshold = itemEl.offsetWidth * 0.4;
+        if(jCurrentX > threshold){
+          jContent.style.transform = 'translateX(100%)';
+          setTimeout(() => deleteJournalWord(word), 200);
+        } else {
+          jContent.style.transform = 'translateX(0)';
+        }
+      });
     });
   }
+
+  // İndir popup'ının dışına tıklanınca kapansın (düğmenin kendisi e.stopPropagation() ile bu dinleyiciyi tetiklemiyor)
+  document.addEventListener('click', (e) => {
+    if(e.target.closest('.journal-download-popup') || e.target.closest('[data-action="download"]')) return;
+    document.querySelectorAll('.journal-download-popup').forEach(p => { p.style.display = 'none'; });
+  });
 
   function showJournalTooLongWarning(){
     const overlay = document.createElement('div');
@@ -1960,12 +2107,14 @@ document.getElementById('btnSelect').addEventListener('click', () => {
       if(journalFilter === 'turkce') return !isTengwarText(e.word);
       return true;
     });
-    renderJournalList(document.getElementById('journalList'), filtered);
+    // en son kaydedilen en üstte görünsün
+    renderJournalList(document.getElementById('journalList'), filtered.slice().reverse());
   }
 
   function renderJournalFavorites(){
     const favs = journalEntries.filter(e => e.favorite);
-    renderJournalList(document.getElementById('journalFavList'), favs);
+    // en son kaydedilen en üstte görünsün
+    renderJournalList(document.getElementById('journalFavList'), favs.slice().reverse());
   }
 
   function toggleJournalFavorite(word){
